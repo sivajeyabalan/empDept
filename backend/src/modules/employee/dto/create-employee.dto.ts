@@ -1,7 +1,8 @@
-import { IsEmail, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString, IsUUID, Matches, Min } from 'class-validator';
 
 export class CreateEmployeeDto {
   @IsString()
+  @Matches(/^[a-zA-Z\s]+$/, { message: 'Name must contain only alphabetic characters' })
   name: string;
 
   @IsEmail()
@@ -9,7 +10,7 @@ export class CreateEmployeeDto {
 
   @IsOptional()
   @IsNumber()
-  @Min(0)
+  @Min(10000, { message: 'Salary must be at least 10000' })
   salary?: number;
 
   @IsUUID()
