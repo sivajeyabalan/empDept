@@ -15,7 +15,9 @@ import { EmployeeModule } from './modules/employee/employee.module';
         url: configService.get('DB_URL'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: false,
-        ssl: { rejectUnauthorized: false }, // ✅ required for Supabase
+        ssl: { rejectUnauthorized: false },
+        retryAttempts: 5,
+        retryDelay: 3000,
       }),
       inject: [ConfigService],
     }),
