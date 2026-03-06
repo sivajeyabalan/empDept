@@ -1,26 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Department } from './entities/department.entity';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 
 @Injectable()
 export class DepartmentService {
-  create(createDepartmentDto: CreateDepartmentDto) {
-    return 'This action adds a new department';
+  constructor(
+    @InjectRepository(Department)
+    private departmentRepository: Repository<Department>,
+  ) {}
+
+  async create(dto: CreateDepartmentDto): Promise<Department> {
+    const dept = this.departmentRepository.create(dto);
+    return this.departmentRepository.save(dept);
   }
 
-  findAll() {
-    return `This action returns all department`;
+  async findAll(): Promise<Department[]> {
+    return this.departmentRepository.find({ relations: ['employees'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} department`;
+  async findOne(id: string): Promise<Department> {
+    const dept = await this.departmentRepository.findOne({
+      where: { id },
+      relations: ['employees'],
+    });
+    if (!dept) throw new NotFoundException(`Department #${id} not found`);
+    return dept;
   }
 
-  update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
-    return `This action updates a #${id} department`;
+  async update(id: string, dto: UpdateDepartmentDto): Promise<Department> {
+    const dept = await this.findOne(id);
+    Object.assign(dept, dto);
+    return this.departmentRepository.save(dept);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} department`;
+  async remove(id: string): Promise<{ message: string }> {
+    const dept = await this.findOne(id);
+
+    if (dept.employees && dept.employees.length > 0) {
+      throw new BadRequestException(
+        `Cannot delete department "${dept.name}" — it still has ${dept.employees.length} employee(s). Reassign or remove them first.`,
+      );
+    }
+
+    await this.departmentRepository.remove(dept);
+    return { message: `Department deleted successfully` };
   }
 }

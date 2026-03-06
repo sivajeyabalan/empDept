@@ -1,4 +1,4 @@
-import { Department } from 'src/modules/department/entities/department.entity';
+import { Department } from '../../department/entities/department.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
 

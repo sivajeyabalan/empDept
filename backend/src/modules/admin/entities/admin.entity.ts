@@ -11,8 +11,8 @@ export class Admin {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  password_hash: string;
+  @Column({ name: 'password_hash' })
+  password: string;
 
   @CreateDateColumn()
   created_at: Date;

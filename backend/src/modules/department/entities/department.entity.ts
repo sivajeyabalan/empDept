@@ -1,4 +1,4 @@
-import { Employee } from 'src/modules/employee/entities/employee.entity';
+import { Employee } from '../../employee/entities/employee.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 
 

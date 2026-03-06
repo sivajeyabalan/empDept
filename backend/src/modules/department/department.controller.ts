@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
-@Controller('department')
+@UseGuards(JwtAuthGuard)
+@Controller('dept')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
+  // POST /dept
   @Post()
-  create(@Body() createDepartmentDto: CreateDepartmentDto) {
-    return this.departmentService.create(createDepartmentDto);
+  create(@Body() dto: CreateDepartmentDto) {
+    return this.departmentService.create(dto);
   }
 
+  // GET /dept
   @Get()
   findAll() {
     return this.departmentService.findAll();
   }
 
+  // GET /dept/:id
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.departmentService.findOne(+id);
+    return this.departmentService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDepartmentDto: UpdateDepartmentDto) {
-    return this.departmentService.update(+id, updateDepartmentDto);
+  // PUT /dept/:id
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateDepartmentDto) {
+    return this.departmentService.update(id, dto);
   }
 
+  // DELETE /dept/:id
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.departmentService.remove(+id);
+    return this.departmentService.remove(id);
   }
 }
