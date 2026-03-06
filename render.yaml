@@ -3,7 +3,7 @@ services:
     name: emp-dept-backend
     runtime: node
     rootDir: backend
-    buildCommand: npm install -g pnpm && pnpm install && pnpm run build
+    buildCommand: npm install -g pnpm && pnpm install && pnpm exec nest build
     startCommand: node dist/main.js
     envVars:
       - key: NODE_ENV
@@ -11,6 +11,6 @@ services:
       - key: DB_URL
         sync: false
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: FRONTEND_URL
         sync: false
